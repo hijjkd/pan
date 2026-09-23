@@ -6,7 +6,7 @@
 # 设置 → 触发器 → 自定义域），填入 pan.你的域名.com。
 # 也可在下方取消注释 routes 写死自定义域（需把 pan.example.com 改成真实域名）：
 
-name = "quark-relay"
+name = "pan"
 main = "worker.js"
 compatibility_date = "2024-09-23"
 
