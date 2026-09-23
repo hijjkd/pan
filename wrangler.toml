@@ -1,0 +1,15 @@
+# Cloudflare Workers 部署配置 —— 夸克网盘分享「防红中转站」
+# 通过 GitHub 集成部署时使用：Cloudflare 会读取仓库根目录的这份配置，
+# 识别 main 指向的入口文件为一个 Worker 项目。
+#
+# 部署成功后在 Cloudflare 控制台绑定自定义域（Workers → quark-relay →
+# 设置 → 触发器 → 自定义域），填入 pan.你的域名.com。
+# 也可在下方取消注释 routes 写死自定义域（需把 pan.example.com 改成真实域名）：
+
+name = "quark-relay"
+main = "worker.js"
+compatibility_date = "2024-09-23"
+
+# routes = [
+#   { pattern = "pan.example.com/*", custom_domain = true },
+# ]
