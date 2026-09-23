@@ -119,7 +119,6 @@ function renderGuide(target, isWeChat) {
 <script>
 (function(){
   var TARGET = ${JSON.stringify(target)};
-  var SCHEME = 'quark://';           // 占位，请以夸克官方 Scheme 为准
   document.getElementById('linkField').textContent = TARGET;
 
   function copy(text){
@@ -140,16 +139,11 @@ function renderGuide(target, isWeChat) {
   var jumped = false;
   function openQuark(){
     if (jumped) return; jumped = true;
-    var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    var left = false;
-    document.addEventListener('visibilitychange', function(){ if (document.hidden) left = true; });
-    // 先尝试唤起 App（X / 微信等内嵌浏览器通常会拦截，无妨）
-    if (isIOS){
-      var f = document.createElement('iframe'); f.style.display='none'; f.src = SCHEME;
-      document.body.appendChild(f); setTimeout(function(){ f.remove(); }, 1400);
-    } else { try { location.href = SCHEME; } catch(e){} }
-    // 兜底：自动跳转到夸克网页版（内嵌浏览器里此导航被放行 → 与 pan.quarkt.xyz 行为一致）
-    setTimeout(function(){ if (!left && !document.hidden) location.href = TARGET; }, 1000);
+    // 直接走夸克通用链接 pan.quark.cn/s/{id}：
+    //  - 已装夸克 App → 系统/浏览器按 Universal Link 自动拉起 App（与 pan.quarkt.xyz 行为一致）
+    //  - 未装 App   → 落夸克网页版，正常显示分享
+    // 不再先尝试 quark:// 这类自定义 scheme（X / 微信等内嵌浏览器会拦截，反而拖累跳转）
+    location.href = TARGET;
   }
   document.getElementById('openBtn').onclick = openQuark;
 
