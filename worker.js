@@ -102,7 +102,7 @@ function renderGuide(target, isWeChat) {
 
       <section class="block">
         <div class="btitle"><i class="dot"></i>打开资源</div>
-        <p class="desc">点击按钮唤起夸克并自动跳转。若未打开，请复制链接到浏览器自行打开。</p>
+        <p class="desc">正在自动唤起夸克并跳转… 若未自动打开，可点击下方按钮或复制链接。</p>
         <button class="btn btn-primary" id="openBtn">打开夸克 App</button>
       </section>
 
@@ -136,16 +136,25 @@ function renderGuide(target, isWeChat) {
     var b = this;
     copy(TARGET).then(function(){ b.textContent = '已复制'; setTimeout(function(){ b.textContent = '复制夸克链接'; }, 1800); });
   };
-  document.getElementById('openBtn').onclick = function(){
+
+  var jumped = false;
+  function openQuark(){
+    if (jumped) return; jumped = true;
     var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     var left = false;
     document.addEventListener('visibilitychange', function(){ if (document.hidden) left = true; });
+    // 先尝试唤起 App（X / 微信等内嵌浏览器通常会拦截，无妨）
     if (isIOS){
       var f = document.createElement('iframe'); f.style.display='none'; f.src = SCHEME;
       document.body.appendChild(f); setTimeout(function(){ f.remove(); }, 1400);
     } else { try { location.href = SCHEME; } catch(e){} }
-    setTimeout(function(){ if (!left && !document.hidden) location.href = TARGET; }, 1200);
-  };
+    // 兜底：自动跳转到夸克网页版（内嵌浏览器里此导航被放行 → 与 pan.quarkt.xyz 行为一致）
+    setTimeout(function(){ if (!left && !document.hidden) location.href = TARGET; }, 1000);
+  }
+  document.getElementById('openBtn').onclick = openQuark;
+
+  // 关键：加载即自动跳转，匹配 pan.quarkt.xyz 在 X 内嵌浏览器「直接跳」的行为
+  openQuark();
 })();
 </script>
 </body>
